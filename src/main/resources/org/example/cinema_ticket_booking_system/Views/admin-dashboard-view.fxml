@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import com.calendarfx.view.CalendarView?>
+
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.cinema_ticket_booking_system.AdminDashboardController">
+
+    <!-- Top Bar -->
+    <top>
+        <HBox spacing="10" style="-fx-background-color: #2c3e50;">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Button text="Add Movie" onAction="#showAddMovieForm" style="-fx-text-fill: white; -fx-background-color: #3498db;" />
+            <Label text="Admin Dashboard" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <StackPane fx:id="mainContent">
+
+            <!-- CalendarView directly in FXML -->
+            <AnchorPane fx:id="calendarPane">
+                <children>
+                    <CalendarView fx:id="calendarView"
+                                  AnchorPane.topAnchor="0"
+                                  AnchorPane.bottomAnchor="0"
+                                  AnchorPane.leftAnchor="0"
+                                  AnchorPane.rightAnchor="0"/>
+                </children>
+            </AnchorPane>
+
+            <!-- Add Movie Form (Initially hidden) -->
+            <VBox fx:id="addMovieForm" spacing="10"
+                  style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);"
+                  visible="false" translateX="400">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Label text="Add New Movie" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+                <TextField fx:id="movieTitleField" promptText="Movie Title"/>
+                <TextField fx:id="languageField" promptText="Language"/>
+                <TextField fx:id="trailerUrlField" promptText="Trailer URL"/>
+                <DatePicker fx:id="releaseDatePicker" promptText="Date of Release"/>
+                <TextArea fx:id="descriptionField" promptText="Description" prefRowCount="3"/>
+                <TextField fx:id="durationField" promptText="Duration (minutes)"/>
+                <TextField fx:id="posterUrlField" promptText="Poster URL"/>
+                <ComboBox fx:id="directorComboBox" promptText="Select Director"/>
+
+                <HBox spacing="10">
+                    <Button text="Save" onAction="#saveMovie" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                    <Button text="Cancel" onAction="#hideAddMovieForm" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+                </HBox>
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>

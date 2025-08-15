@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox styleClass="root" stylesheets="@../../../../style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.cinema_ticket_booking_system.MovieBrowserController">
+    <children>
+        <VBox styleClass="header" alignment="CENTER_LEFT" spacing="5">
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+            </padding>
+            <Text text="CineApp" styleClass="logo-text-small"/>
+            <Label text="Welcome, User!" styleClass="welcome-label"/>
+        </VBox>
+
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox spacing="20.0" styleClass="content-pane">
+                    <padding>
+                        <Insets top="20" right="40" bottom="20" left="40"/>
+                    </padding>
+                    <Label text="What's On" styleClass="section-header" />
+                    <TilePane fx:id="movieTilePane" hgap="30" vgap="30" prefColumns="4" />
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</VBox>
