@@ -1,4 +1,4 @@
-#🎟️ Cinema Ticket Booking System
+# 🎟️ Cinema Ticket Booking System
 A Java-based cinema ticket booking application using JavaFX, Maven, Hibernate, and SQL Server.
 
 ---
@@ -15,8 +15,8 @@ Detailed descriptions available in [docs](docs/).
 
 ---
 
-##🚀 How to Run
-###1️⃣ Clone the Repository
+## 🚀 How to Run
+### 1️⃣ Clone the Repository
 
 
 Recommended (IntelliJ IDEA)
@@ -29,28 +29,28 @@ Recommended (IntelliJ IDEA)
 Alternative (Command Line)
 `git clone https://github.com/tarek-moh/Cinema-Ticket-booking-System`
 
-###2️⃣ Set Up SQL Server
+### 2️⃣ Set Up SQL Server
 1. Install Microsoft SQL Server and SQL Server Management Studio (SSMS).
 2. Create a local SQL Server instance.
    -Enable both Windows Authentication and SQL Server Authentication.
    -Create a username/password for the instance.
 
-###3️⃣ Create the Database
+### 3️⃣ Create the Database
 Run the provided database script:
 `cinemaDB.sql`
 (This file contains the schema and seed data.)
 
-###4️⃣ Configure Hibernate Connection
+### 4️⃣ Configure Hibernate Connection
 1. Open:
   `src/main/resources/hibernate.cfg.xml`
 2. Update the `<property name="hibernate.connection.url">` line:
   `jdbc:sqlserver://localhost;databaseName=<DBname>;user=<Username>;password=<Password>;trustServerCertificate=true`
   
-###✅ You’re ready to run the project!
+### ✅ You’re ready to run the project!
 Use IntelliJ’s Run button or:
   `mvn clean install
    mvn exec:java`
 
-##📜 License
+## 📜 License
 This project is developed for educational purposes.
   
