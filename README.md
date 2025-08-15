@@ -32,8 +32,8 @@ Alternative (Command Line)
 ### 2️⃣ Set Up SQL Server
 1. Install Microsoft SQL Server and SQL Server Management Studio (SSMS).
 2. Create a local SQL Server instance.
-   -Enable both Windows Authentication and SQL Server Authentication.
-   -Create a username/password for the instance.
+   - Enable both Windows Authentication and SQL Server Authentication.
+   - Create a username/password for the instance.
 
 ### 3️⃣ Create the Database
 Run the provided database script:
