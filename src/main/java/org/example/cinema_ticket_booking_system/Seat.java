@@ -13,14 +13,16 @@ public class Seat {
 
     @Id
     @ManyToOne(optional = false)
-    @JoinColumn(name = "hallID",
-            foreignKey = @ForeignKey(name = "fk_hall"))
+    @JoinColumn(name = "hallID", foreignKey = @ForeignKey(name = "fk_hall"))
     private Hall hall;
 
     protected Seat() {}
-    public Seat(Hall hall) { this.hall = hall; }
+    public Seat(Hall hall) { setHall(hall); }
 
     public Integer getSeatNumber() { return seatNumber; }
     public Hall getHall() { return hall; }
-    public void setHall(Hall hall) { this.hall = hall; }
+    public void setHall(Hall hall) {
+        if (hall == null) throw new IllegalArgumentException("hall is required");
+        this.hall = hall;
+    }
 }
