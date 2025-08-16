@@ -25,9 +25,22 @@ public class Cast {
     }
 
     public Movie getMovie() { return movie; }
-    public void setMovie(Movie movie) { this.movie = movie; }
+    public void setMovie(Movie movie) {        
+        if (movie == null) throw new IllegalArgumentException("movie is required");
+
+        this.movie = movie; }
     public Integer getActorId() { return actorId; }
-    public void setActorId(Integer actorId) { this.actorId = actorId; }
+    public void setActorId(Integer actorId) {
+        if (actorId == null || actorId <= 0)
+            throw new IllegalArgumentException("actorId must be a positive integer");
+        this.actorId = actorId;
+    }
+
     public String getRolePlayed() { return rolePlayed; }
-    public void setRolePlayed(String rolePlayed) { this.rolePlayed = rolePlayed; }
+    public void setRolePlayed(String rolePlayed) {
+        if (rolePlayed != null && rolePlayed.length() > 80)
+            throw new IllegalArgumentException("rolePlayed max length is 80");
+        this.rolePlayed = rolePlayed;
+    }
 }
+
