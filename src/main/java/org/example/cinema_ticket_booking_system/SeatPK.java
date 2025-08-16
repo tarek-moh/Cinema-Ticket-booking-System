@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class SeatPK implements Serializable {
     private Integer seatNumber;
-    private Integer hall; // matches field name 'hall' (Hall PK type)
+    private Integer hall;
 
     public SeatPK() {}
     public SeatPK(Integer seatNumber, Integer hall) { this.seatNumber = seatNumber; this.hall = hall; }
