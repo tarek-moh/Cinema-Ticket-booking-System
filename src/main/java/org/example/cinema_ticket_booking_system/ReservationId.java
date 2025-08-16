@@ -19,9 +19,9 @@ public class ReservationId implements Serializable {
         if (!(o instanceof ReservationId)) return false;
         ReservationId that = (ReservationId) o;
         return Objects.equals(screening, that.screening) &&
-                Objects.equals(ticket, that.ticket) &&
-                Objects.equals(seatNumber, that.seatNumber) &&
-                Objects.equals(hallId, that.hallId);
+               Objects.equals(ticket, that.ticket) &&
+               Objects.equals(seatNumber, that.seatNumber) &&
+               Objects.equals(hallId, that.hallId);
     }
     @Override public int hashCode() { return Objects.hash(screening, ticket, seatNumber, hallId); }
 }
