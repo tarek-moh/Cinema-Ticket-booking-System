@@ -15,22 +15,35 @@ public class Screening {
     private LocalDateTime startTime;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "movieID",
-            foreignKey = @ForeignKey(name = "fk_movie"))
+    @JoinColumn(name = "movieID", foreignKey = @ForeignKey(name = "fk_movie"))
     private Movie movie;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "hallID",
-            foreignKey = @ForeignKey(name = "fk_hall"))
+    @JoinColumn(name = "hallID", foreignKey = @ForeignKey(name = "fk_hall"))
     private Hall hall;
 
     protected Screening() {}
 
+    public Screening(LocalDateTime startTime, Movie movie, Hall hall) {
+        setStartTime(startTime);
+        setMovie(movie);
+        setHall(hall);
+    }
+
     public Integer getId() { return id; }
     public LocalDateTime getStartTime() { return startTime; }
-    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+    public void setStartTime(LocalDateTime startTime) {
+        if (startTime == null) throw new IllegalArgumentException("startTime is required");
+        this.startTime = startTime;
+    }
     public Movie getMovie() { return movie; }
-    public void setMovie(Movie movie) { this.movie = movie; }
+    public void setMovie(Movie movie) {
+        if (movie == null) throw new IllegalArgumentException("movie is required");
+        this.movie = movie;
+    }
     public Hall getHall() { return hall; }
-    public void setHall(Hall hall) { this.hall = hall; }
+    public void setHall(Hall hall) {
+        if (hall == null) throw new IllegalArgumentException("hall is required");
+        this.hall = hall;
+    }
 }
