@@ -3,8 +3,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import com.calendarfx.view.CalendarView?>
-
 <?import javafx.geometry.Insets?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.cinema_ticket_booking_system.AdminDashboardController">
 
     <!-- Top Bar -->
@@ -13,8 +13,9 @@
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
-            <Button text="Add Movie" onAction="#showAddMovieForm" style="-fx-text-fill: white; -fx-background-color: #3498db;" />
-            <Label text="Admin Dashboard" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+            <Button text="Add Movie" onAction="#toggleAddMovieForm"
+                    style="-fx-text-fill: white; -fx-background-color: #3498db;" />
+            <Label text="Hi Admin" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
         </HBox>
     </top>
 
@@ -22,7 +23,7 @@
     <center>
         <StackPane fx:id="mainContent">
 
-            <!-- CalendarView directly in FXML -->
+            <!-- CalendarView -->
             <AnchorPane fx:id="calendarPane">
                 <children>
                     <CalendarView fx:id="calendarView"
@@ -33,7 +34,7 @@
                 </children>
             </AnchorPane>
 
-            <!-- Add Movie Form (Initially hidden) -->
+            <!-- Add Movie Form -->
             <VBox fx:id="addMovieForm" spacing="10"
                   style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);"
                   visible="false" translateX="400">
@@ -49,11 +50,55 @@
                 <TextArea fx:id="descriptionField" promptText="Description" prefRowCount="3"/>
                 <TextField fx:id="durationField" promptText="Duration (minutes)"/>
                 <TextField fx:id="posterUrlField" promptText="Poster URL"/>
-                <ComboBox fx:id="directorComboBox" promptText="Select Director"/>
 
+                <!-- Director Section -->
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <ComboBox fx:id="directorComboBox" promptText="Search Director" HBox.hgrow="ALWAYS"/>
+                    <Button text="+" onAction="#showNewDirectorForm" style="-fx-background-color: #8e44ad; -fx-text-fill: white;"/>
+                </HBox>
+
+                <!-- New Director Form (hidden by default) -->
+                <VBox fx:id="newDirectorForm" spacing="5" visible="false" managed="false" style="-fx-background-color: #ecf0f1; -fx-padding: 10;">
+                    <Label text="Add New Director" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="directorNameField" promptText="Name"/>
+                    <TextArea fx:id="directorBioField" promptText="Biography" prefRowCount="2"/>
+                    <TextField fx:id="directorGenderField" promptText="Gender"/>
+                    <TextField fx:id="directorPhotoField" promptText="Photo URL"/>
+                    <TextField fx:id="directorMoviesField" promptText="No. of Movies Directed"/>
+                    <HBox spacing="5">
+                        <Button text="Save" onAction="#saveNewDirector" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                        <Button text="Cancel" onAction="#hideNewDirectorForm" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Actor Section -->
+                <Label text="Actors" style="-fx-font-weight: bold;"/>
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                    <TextField fx:id="actorSearchField" promptText="Type to filter actors..." HBox.hgrow="ALWAYS"/>
+                    <Button text="+" onAction="#showNewActorForm" style="-fx-background-color: #8e44ad; -fx-text-fill: white;"/>
+                </HBox>
+                <ListView fx:id="actorListView" prefHeight="120" />
+
+                <!-- New Actor Form (hidden by default) -->
+                <VBox fx:id="newActorForm" spacing="5" visible="false" managed="false" style="-fx-background-color: #ecf0f1; -fx-padding: 10;">
+                    <Label text="Add New Actor" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="actorNameField" promptText="Name"/>
+                    <TextArea fx:id="actorBioField" promptText="Biography" prefRowCount="2"/>
+                    <TextField fx:id="actorGenderField" promptText="Gender"/>
+                    <TextField fx:id="actorPhotoField" promptText="Photo URL"/>
+                    <TextField fx:id="actorRoleField" promptText="Famous Role"/>
+                    <HBox spacing="5">
+                        <Button text="Save" onAction="#saveNewActor" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                        <Button text="Cancel" onAction="#hideNewActorForm" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Movie Form Buttons -->
                 <HBox spacing="10">
-                    <Button text="Save" onAction="#saveMovie" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
-                    <Button text="Cancel" onAction="#hideAddMovieForm" style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+                    <Button text="Save" onAction="#saveMovie"
+                            style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                    <Button text="Cancel" onAction="#hideAddMovieForm"
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
                 </HBox>
             </VBox>
         </StackPane>

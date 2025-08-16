@@ -41,6 +41,7 @@
 
 .button:hover {
     -fx-background-color: #007BA7; /* Darker blue on hover */
+    -fx-cursor: hand;
 }
 
 .button-danger {
