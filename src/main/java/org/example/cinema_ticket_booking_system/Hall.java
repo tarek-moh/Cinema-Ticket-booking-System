@@ -5,22 +5,38 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Hall")
 public class Hall {
+    //no setters for the hallid as its auto incremented
+
+    public Hall(){}
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "HallID")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // for IDENTITY auto-increment
+    private int HallID;
+    @Column( nullable = false)
+    private int Capacity;
 
-    @Column(name = "Capacity", nullable = false)
-    private Integer capacity;
 
-    protected Hall() {}
-    public Hall(Integer capacity) { setCapacity(capacity); }
+    public int getHallID() {
+        return HallID;
+    }
 
-    public Integer getId() { return id; }
-    public Integer getCapacity() { return capacity; }
-    public void setCapacity(Integer capacity) {
-        if (capacity == null || capacity <= 0)
-            throw new IllegalArgumentException("capacity must be > 0");
-        this.capacity = capacity;
+    public int getCapacity() {
+        return Capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        Capacity = capacity;
+    }
+
+
+//    public void setHallID(int hallID) {
+//        this.HallID = hallID;
+//    }
+
+    @Override
+    public String toString() {
+        return "Hall{" +
+                "HallID=" + HallID +
+                ", Capacity=" + Capacity +
+                '}';
     }
 }

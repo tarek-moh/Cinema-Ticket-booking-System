@@ -1,49 +1,81 @@
 package org.example.cinema_ticket_booking_system;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Screening")
+@Check(constraints = "TicketPrice>0")
 public class Screening {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ScreeningID")
-    private Integer id;
+    private int ScreeningID;
 
-    @Column(name = "StartTime", nullable = false)
-    private LocalDateTime startTime;
+    @Column(nullable = false)
+    private LocalDateTime StartTime;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "movieID", foreignKey = @ForeignKey(name = "fk_movie"))
+    @Column(nullable = false)
+    private int TicketPrice;
+
+    @ManyToOne    /// ask tottyy is this true ???
+    @JoinColumn(name ="movieID",nullable = false)
     private Movie movie;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "hallID", foreignKey = @ForeignKey(name = "fk_hall"))
+    @ManyToOne
+    @JoinColumn(name = "hallID", nullable = false)
     private Hall hall;
 
-    protected Screening() {}
 
-    public Screening(LocalDateTime startTime, Movie movie, Hall hall) {
-        setStartTime(startTime);
-        setMovie(movie);
-        setHall(hall);
+    public int getScreeningID() {
+        return ScreeningID;
     }
 
-    public Integer getId() { return id; }
-    public LocalDateTime getStartTime() { return startTime; }
-    public void setStartTime(LocalDateTime startTime) {
-        if (startTime == null) throw new IllegalArgumentException("startTime is required");
-        this.startTime = startTime;
+    public Hall getHall() {
+        return hall;
     }
-    public Movie getMovie() { return movie; }
-    public void setMovie(Movie movie) {
-        if (movie == null) throw new IllegalArgumentException("movie is required");
-        this.movie = movie;
-    }
-    public Hall getHall() { return hall; }
+
     public void setHall(Hall hall) {
-        if (hall == null) throw new IllegalArgumentException("hall is required");
         this.hall = hall;
     }
+
+    public int getTicketPrice() {
+        return TicketPrice;
+    }
+
+    public void setTicketPrice(int ticketPrice) {
+        TicketPrice = ticketPrice;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+
+    public LocalDateTime getStartTime() {
+        return StartTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        StartTime = startTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Screening{" +
+                "ScreeningID=" + ScreeningID +
+                ", StartTime=" + StartTime +
+                ", TicketPrice=" + TicketPrice +
+                ", movie=" + movie +
+                ", hall=" + hall +
+                '}';
+    }
+
 }

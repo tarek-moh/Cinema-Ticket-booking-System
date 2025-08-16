@@ -2,27 +2,40 @@ package org.example.cinema_ticket_booking_system;
 
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "Seat")
-@IdClass(SeatPK.class)
 public class Seat {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SeatNumber")
-    private Integer seatNumber;
+    @EmbeddedId
+    private SeatID seatID;
 
-    @Id
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "hallID", foreignKey = @ForeignKey(name = "fk_hall"))
+    public SeatID getSeatID() {
+        return seatID;
+    }
+
+    public void setSeatID(SeatID seatID) {
+        this.seatID = seatID;
+    }
+
+    @ManyToOne
+    @MapsId("hallID") // maps hallID in SeatID
+    @JoinColumn(name = "hallID")
     private Hall hall;
 
-    protected Seat() {}
-    public Seat(Hall hall) { setHall(hall); }
-
-    public Integer getSeatNumber() { return seatNumber; }
-    public Hall getHall() { return hall; }
-    public void setHall(Hall hall) {
-        if (hall == null) throw new IllegalArgumentException("hall is required");
+/// can not increment the seatNumber directly we will need to increment it manuallyyy!!!!
+    public Seat(Hall hall, int seatNumber) {
         this.hall = hall;
+        this.seatID = new SeatID();
+        this.seatID.setHallID(hall.getHallID());
+        this.seatID.setseatNumber(seatNumber);
     }
+
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "seatID=" + seatID +
+                ", hall=" + hall +
+                '}';
+    }
+
 }
