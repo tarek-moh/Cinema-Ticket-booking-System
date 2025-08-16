@@ -1,22 +1,26 @@
 package org.example.cinema_ticket_booking_system;
+
 import jakarta.persistence.*;
+
 @Entity
-@Table(name="Hall")
+@Table(name = "Hall")
 public class Hall {
     @Id
-    @Column(name="HallID")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int HallID;
-    @Column(name="Capacity")
-    private int Capacity;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "HallID")
+    private Integer id;
 
-    public int getHallID() {
-        return HallID;
-    }
-    public int getCapacity() {
-        return Capacity;
-    }
-    public void setCapacity(int Capacity) {
-        this.Capacity = Capacity;
+    @Column(name = "Capacity", nullable = false)
+    private Integer capacity;
+
+    protected Hall() {}
+    public Hall(Integer capacity) { setCapacity(capacity); }
+
+    public Integer getId() { return id; }
+    public Integer getCapacity() { return capacity; }
+    public void setCapacity(Integer capacity) {
+        if (capacity == null || capacity <= 0)
+            throw new IllegalArgumentException("capacity must be > 0");
+        this.capacity = capacity;
     }
 }
