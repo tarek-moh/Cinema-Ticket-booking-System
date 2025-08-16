@@ -1,6 +1,7 @@
 package org.example.cinema_ticket_booking_system;
 import java.util.Objects;
-public class CastID {
+import java.io.serializable;
+public class CastID implements Serializable {
     private Integer movie;
     private Integer actorId;
 
@@ -17,3 +18,4 @@ public class CastID {
     }
     @Override public int hashCode() { return Objects.hash(movie, actorId); }
 }
+
