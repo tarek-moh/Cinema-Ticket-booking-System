@@ -1,6 +1,6 @@
 package org.example.cinema_ticket_booking_system;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.time.LocalDate;
 
@@ -16,13 +16,13 @@ public class Ticket { ///  no setters for TicketID nor Customer !!!
 
     @ManyToOne
     @JoinColumn(name = "customerID") // this is the foreign key column in Ticket table
-    private Customer customer;
+    private User customer;
 
     public LocalDate getBookTime() {
         return BookTime;
     }
 
-    public Customer getCustomer() {
+    public User getCustomer() {
         return customer;
     }
 

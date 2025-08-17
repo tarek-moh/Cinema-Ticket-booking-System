@@ -1,7 +1,7 @@
 package org.example.cinema_ticket_booking_system;
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 public class Reservation { /// Use @MapsId to map foreign keys to the embedded ID.

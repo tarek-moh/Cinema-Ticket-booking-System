@@ -1,9 +1,12 @@
 package org.example.cinema_ticket_booking_system;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.Check;
+import org.hibernate.annotations.*;
 
-import java.time.LocalDate;
+
+import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity

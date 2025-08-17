@@ -1,6 +1,6 @@
 package org.example.cinema_ticket_booking_system;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -32,11 +32,14 @@ public class Movie {
     @Column(name = "TrailerURL", length = 255)
     private String trailerUrl;
 
-    @Column(name = "AdminID", length = 50)
-    private String adminId;
+    @ManyToOne
+    @JoinColumn(name = "AdminID", foreignKey = @ForeignKey(name = "fk_admin"))
+    private User admin;
 
-    @Column(name = "DirectorID")
-    private Integer directorId;
+    @ManyToOne
+    @JoinColumn(name = "DirectorID", foreignKey = @ForeignKey(name = "fk_director"))
+    private MovieCrew director;
+
 
     protected Movie() {}
 
@@ -93,13 +96,11 @@ public class Movie {
         this.trailerUrl = trailerUrl;
     }
 
-    public String getAdminId() { return adminId; }
-    public void setAdminId(String adminId) {
-        if (adminId != null && adminId.length() > 50)
-            throw new IllegalArgumentException("adminId max length is 50");
-        this.adminId = adminId;
+    public User getAdmin() { return admin; }
+    public void setAdminId(User admin) {
+        this.admin = admin;
     }
 
-    public Integer getDirectorId() { return directorId; }
-    public void setDirectorId(Integer directorId) { this.directorId = directorId; }
+    public MovieCrew getDirector() { return director;}
+    public void setDirector(MovieCrew director) { this.director = director; }
 }
