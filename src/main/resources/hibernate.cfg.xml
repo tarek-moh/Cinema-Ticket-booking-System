@@ -8,7 +8,7 @@
 
         <!-- Database connection settings -->
         <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-        <property name="hibernate.connection.url">jdbc:sqlserver://localhost;databaseName=cinemaDB;user=cinema;password=password;trustServerCertificate=true</property>
+        <property name="hibernate.connection.url">jdbc:sqlserver://localhost;databaseName=Cinema;user=sa;password=sa;trustServerCertificate=true</property>
 
         <!-- JDBC connection pool -->
         <property name="hibernate.connection.pool_size">5</property>
@@ -19,12 +19,23 @@
         <!-- Show SQL in console -->
         <property name="hibernate.show_sql">true</property>
 
-        <!-- Automatically update schema -->
+        <!-- Automatically Validate schema -->
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Entity mappings -->
-        <mapping class="com.example.model.Movie"/>
-        <mapping class="com.example.model.Actor"/>
+        <mapping class="org.example.cinema_ticket_booking_system.Movie"/>
+        <mapping class="org.example.cinema_ticket_booking_system.MovieCrew"/>
+        <mapping class="org.example.cinema_ticket_booking_system.Screening"/>
+        <mapping class="org.example.cinema_ticket_booking_system.Hall"/>
+        <mapping class="org.example.cinema_ticket_booking_system.Reservation"/>
+        <mapping class="org.example.cinema_ticket_booking_system.Seat"/>
+        <mapping class="org.example.cinema_ticket_booking_system.Ticket"/>
+        <mapping class="org.example.cinema_ticket_booking_system.User"/>
+        <mapping class="org.example.cinema_ticket_booking_system.Cast"/>
+        <mapping class="org.example.cinema_ticket_booking_system.Genre"/>
+        <mapping class="org.example.cinema_ticket_booking_system.MemberNationality"/>
+        <mapping class="org.example.cinema_ticket_booking_system.MovieGenre"/>
+        <mapping class="org.example.cinema_ticket_booking_system.Nationality"/>
 
     </session-factory>
 </hibernate-configuration>

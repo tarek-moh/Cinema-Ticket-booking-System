@@ -5,19 +5,28 @@ import com.calendarfx.model.CalendarEvent;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
+import com.calendarfx.view.popover.EntryPopOverContentPane;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.controlsfx.control.PopOver;
 import org.controlsfx.control.textfield.TextFields;
+import org.example.cinema_ticket_booking_system.DAOs.ScreeningDAO;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -64,10 +73,13 @@ public class AdminDashboardController {
     // ----------------------- Calendar -----------------------
     @FXML private CalendarView calendarView;
     @FXML private AnchorPane calendarPane;
+    private Calendar defaultCalendar;
 
     // ----------------------- Data Collections -----------------------
+    private SessionFactory sessionFactory = SessionFactoryProvider.provideSessionFactory();
     private ObservableList<String> allDirectors = FXCollections.observableArrayList();
-    private ObservableList<Actor> allActors = FXCollections.observableArrayList();
+    private ObservableList<MovieCrew> allActors = FXCollections.observableArrayList();
+    private ScreeningDAO screeningDAO;
 
     // ----------------------- Initialization -----------------------
     @FXML
@@ -87,87 +99,61 @@ public class AdminDashboardController {
         // allActors.addAll(fetchActorsFromDB());
         updateActorList("");
 
-        // Enable live filtering for actors
-        actorSearchField.textProperty().addListener((obs, oldVal, newVal) -> updateActorList(newVal));
+        defaultCalendar = calendarView.getCalendarSources().get(0).getCalendars().get(0);
+        defaultCalendar.setName("Screenings");
+        loadScreeningEntry();
 
-//        calendarView.setEntryDetailsPopOverContentCallback(e -> {
-//            Entry<?> entry = e.getEntry();
-//            VBox customContent = new VBox(10);
-//            customContent.setPadding(new Insets(10));
-//
-//            // ====== Searchable ComboBox for Movie Name ======
-//            ComboBox<String> movieComboBox = new ComboBox<>();
-//            movieComboBox.setEditable(true); // allows searching
-//            movieComboBox.getItems().addAll(
-//                    "Inception", "Interstellar", "Oppenheimer", "The Dark Knight"
-//            ); // TODO: load dynamically from DB
-//            movieComboBox.setPromptText("Select Movie");
-//
-//            // Pre-fill movie if already set
-//            if (entry.getTitle() != null && !entry.getTitle().isEmpty()) {
-//                movieComboBox.setValue(entry.getTitle());
-//            }
-//
-//            // ====== Searchable ComboBox for Hall ID ======
-//            ComboBox<String> hallComboBox = new ComboBox<>();
-//            hallComboBox.setEditable(true); // allows searching
-//            hallComboBox.getItems().addAll(
-//                    "Hall1", "Hall2", "Hall3"
-//            ); // TODO: load dynamically from DB
-//            hallComboBox.setPromptText("Select Hall");
-//
-//            // Pre-fill hall if already set
-//            if (entry.getLocation() != null && !entry.getLocation().isEmpty()) {
-//                hallComboBox.setValue(entry.getLocation());
-//            }
-//
-//            // ====== Ticket Price Field ======
-//            TextField priceField = new TextField();
-//            priceField.setPromptText("Ticket Price");
-//
-//            // Pre-fill price if already stored in userObject
-//            if (entry.getUserObject() instanceof Double) {
-//                priceField.setText(String.valueOf(entry.getUserObject()));
-//            }
-//
-//            // ====== Save Button ======
-//            Button saveButton = new Button("Save");
-//            saveButton.setOnAction(i -> {
-//                String movieName = movieComboBox.getValue();
-//                String hallID = hallComboBox.getValue();
-//                String priceText = priceField.getText();
-//
-//                // Validation
-//                if (movieName == null || hallID == null || priceText.isEmpty()) {
-//                    Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill all fields.");
-//                    alert.showAndWait();
-//                    return;
-//                }
-//
-//                try {
-//                    double price = Double.parseDouble(priceText);
-//                    // Save values to entry
-//                    entry.setTitle(movieName);
-//                    entry.setLocation(hallID);
-//                    entry.setUserObject(price); // Store price in userObject for retrieval later
-//                } catch (NumberFormatException ex) {
-//                    Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid price.");
-//                    alert.showAndWait();
-//                }
-//            });
-//
-//            customContent.getChildren().addAll(
-//                    new Label("Movie Name"), movieComboBox,
-//                    new Label("Hall ID"), hallComboBox,
-//                    new Label("Ticket Price"), priceField,
-//                    saveButton
-//            );
-//
-//            return customContent;
-//        });
+        calendarView.setEntryDetailsPopOverContentCallback(param -> {
+            Entry<Screening> entry = (Entry<Screening>)param.getEntry();   // now generic Entry<Screening>
+            Screening screening = entry.getUserObject(); // safely retrieve your object
 
-
+            // Pass the PopOver, CalendarView, and Entry to your custom pane
+            return new ScreeningPopOver(param.getPopOver(), calendarView, entry);
+        });
     }
+    private void loadScreeningEntry()
+    {
+        screeningDAO = new ScreeningDAO(sessionFactory);
+        List<Screening> screeningsFromDB = screeningDAO.findAll();
+        for (Screening screening : screeningsFromDB)
+        {
+            Entry entry = new Entry();
+            entry.changeStartDate(screening.getStartTime().toLocalDate());
+            entry.changeEndDate(screening.getStartTime().toLocalDate());
+            entry.changeStartTime(screening.getStartTime().toLocalTime());
+            entry.changeEndTime(screening.getStartTime().toLocalTime().plusMinutes(screening.getMovie().getDurationMinutes()));
+            entry.setTitle(screening.getMovie().getTitle());
+            entry.setLocation("Hall: " + String.valueOf(screening.getHall().getHallID()) + ", Price: " +
+                    String.valueOf(screening.getTicketPrice()) + "EGP");
+            defaultCalendar.addEntry(entry);
+        }
+    }
+
+    private void entryHandler(CalendarEvent ev) {
+        if (ev.getEventType() == CalendarEvent.ENTRY_TITLE_CHANGED)
+        {
+            Entry<?> editedEntry = new Entry<>();
+
+            // Show a dialog to get ticket price
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Ticket Price");
+            dialog.setHeaderText("Enter ticket price for " + editedEntry.getTitle());
+            dialog.setContentText("Price:");
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(price -> {
+                try {
+                    double ticketPrice = Double.parseDouble(price);
+                    // store ticketPrice in your entry or a map
+                    editedEntry.setLocation("Price: $" + ticketPrice); // example usage
+                } catch (NumberFormatException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid price entered!");
+                    alert.showAndWait();
+                }
+            });
+        }
+    }
+
 
     // ----------------------- Show/Hide Movie Form -----------------------
     @FXML
@@ -252,6 +238,35 @@ public class AdminDashboardController {
         }
 
         // TODO: Save to DB and update combo box
+//
+//        // 1️⃣ Create new MovieCrew as Director
+//        MovieCrew director = new MovieCrew(name, "D" + System.currentTimeMillis(), true); // unique code
+//        director.setBiography(bio);
+//        director.setGender(gender);
+//        director.setPhotoUrl(photo);
+//
+//        // 2️⃣ Persist using EntityManager // TODO: should use Hibernate
+//        EntityManager em = entityManagerFactory.createEntityManager();
+//
+//        EntityTransaction tx = em.getTransaction();
+//        try {
+//            tx.begin();
+//            em.persist(director);
+//            tx.commit();
+//        } catch (Exception e) {
+//            if (tx.isActive()) tx.rollback();
+//            e.printStackTrace();
+//            showAlert("Error", "Failed to save director");
+//            return;
+//        } finally {
+//            em.close();
+//        }
+//
+//        // 3️⃣ Update ComboBox
+//        directorComboBox.getItems().add(director);
+//        directorComboBox.setValue(director);
+//
+
         hideNewDirectorForm();
     }
 
@@ -309,5 +324,82 @@ public class AdminDashboardController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+}
+
+class ScreeningPopOver extends EntryPopOverContentPane {
+
+    private final Screening screening;
+
+    public ScreeningPopOver(PopOver popOver, CalendarView calendarView, Entry<Screening> entry) {
+        super(popOver, calendarView, entry);
+        this.screening = entry.getUserObject();
+        // --- UI Components ---
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20));
+
+        // Fields for editing the screening
+        ComboBox<Movie> movieComboBox = new ComboBox<>();
+        ComboBox<Hall> hallComboBox = new ComboBox<>();
+        DatePicker datePicker = new DatePicker();
+        TextField timeField = new TextField("HH:MM"); // e.g., "14:30"
+        TextField priceField = new TextField();
+
+        // --- Populate Fields with existing data ---
+        // In a real app, you'd fetch these from a service/database
+        // List<Movie> allMovies = movieService.findAll();
+        // List<Hall> allHalls = hallService.findAll();
+        // movieComboBox.getItems().addAll(allMovies);
+        // hallComboBox.getItems().addAll(allHalls);
+
+        if(screening != null) {
+            if (screening.getMovie() != null) {
+                movieComboBox.setValue(screening.getMovie());
+            }
+            if (screening.getHall() != null) {
+                hallComboBox.setValue(screening.getHall());
+            }
+            if (screening.getStartTime() != null) {
+                datePicker.setValue(screening.getStartTime().toLocalDate());
+                timeField.setText(screening.getStartTime().toLocalTime().toString());
+            }
+            priceField.setText(String.valueOf(screening.getTicketPrice()));
+        }
+
+        // --- Add components to grid ---
+        grid.add(new Label("Movie:"), 0, 0);
+        grid.add(movieComboBox, 1, 0);
+        grid.add(new Label("Hall:"), 0, 1);
+        grid.add(hallComboBox, 1, 1);
+        grid.add(new Label("Price:"), 0, 2);
+        grid.add(priceField, 1, 2);
+
+        // --- Save Button Logic ---
+        Button saveButton = new Button("Save");
+        saveButton.setOnAction(evt -> {
+            // 1. Update the screening object from UI fields
+            screening.setMovie(movieComboBox.getValue());
+            screening.setHall(hallComboBox.getValue());
+            screening.setTicketPrice(Integer.parseInt(priceField.getText()));
+            LocalDateTime startTime = LocalDateTime.of(datePicker.getValue(), java.time.LocalTime.parse(timeField.getText()));
+            screening.setStartTime(startTime);
+
+            // 2. Persist to database
+            // screeningService.save(screening);
+            System.out.println("Saving screening: " + screening);
+
+            // 3. Update the calendar entry's visual properties
+           // entry.updateEntryProperties();
+
+            // 4. Close the popover
+            getPopOver().hide();
+        });
+
+        grid.add(saveButton, 1, 5);
+
+        // Set the final content
+        setCenter(grid);
     }
 }

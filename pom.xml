@@ -46,26 +46,32 @@
             <version>11.12.7</version>
         </dependency>
 
-        <!-- Hibernate ORM -->
         <dependency>
-            <groupId>org.hibernate.orm</groupId>
+            <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.4.4.Final</version>
+            <version>5.6.15.Final</version>
         </dependency>
+
 
         <!-- JPA API -->
         <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.1.0</version>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
         </dependency>
 
-        <!-- Microsoft SQL Server JDBC driver -->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>12.10.1.jre11</version>
+            <version>12.2.0.jre11</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.naming</groupId>
+                    <artifactId>jndi</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
 
         <!-- Logging (Hibernate uses this internally) -->
         <dependency>
@@ -73,7 +79,24 @@
             <artifactId>jboss-logging</artifactId>
             <version>3.5.3.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.2.5.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
+
+
+
     </dependencies>
+
+
+
 
     <build>
         <plugins>
