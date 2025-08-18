@@ -1,181 +1,150 @@
-
-CREATE TABLE User
-(
-PhoneNumber NVARCHAR(50) Primary Key,
-Email NVARCHAR(100) UNIQUE NOT NULL,
-PasswordHash NVARCHAR(255) NOT NULL,
-FullName NVARCHAR(100),
-CustomerID NVARCHAR(50) UNIQUE NULL,
-AdminID NVARCHAR(50) UNIQUE NULL,
-  CONSTRAINT ck_userlinks_exactly_one
-  CHECK (
-    (AdminID   IS NOT NULL AND CustomerID IS NULL) OR
-    (AdminID   IS NULL     AND CustomerID IS NOT NULL)
-
+CREATE TABLE [User] (
+    PhoneNumber NVARCHAR(50) PRIMARY KEY,
+    Email NVARCHAR(100) UNIQUE NOT NULL,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    FullName NVARCHAR(100),
+    UserType NVARCHAR(10) NOT NULL
 );
 
-CREATE TABLE MovieCrew
-(
-MemberID INT IDENTITY(1,1) PRIMARY KEY,
-FullName NVARCHAR(100),
-Gender NVARCHAR(50)  CHECK (Gender IN ('Male', 'Female') OR Gender IS NULL),
-PhotoURL NVARCHAR(255),
-Biography NVARCHAR(1000),
-DirectorID NVARCHAR(50) UNIQUE NULL,
-ActorID NCARCHAR(50) UNIQUE NULL
-NationalityID INT IDENTITY(1,1) PRIMARY KEY,
-  CONSTRAINT ck_userlinks_exactly_one
-  CHECK (
-    (DirectorID   IS NOT NULL AND ActorID IS NULL) OR
-    (DirectorID   IS NULL     AND ActorID IS NOT NULL)
-CONSTRAINT fk_nationality
-   FOREIGN KEY (NationalityID)
-   REFERENCES  Nationality(NationalityID)
-   ON DELETE CASCADE
-   ON UPDATE CASCADE
+CREATE TABLE Nationality (
+    NationalityID INT IDENTITY(1,1) PRIMARY KEY,
+    Country NVARCHAR(80) NOT NULL
 );
 
+CREATE TABLE MovieCrew (
+    MemberID INT IDENTITY(1,1) PRIMARY KEY,
+    FullName NVARCHAR(100) NOT NULL,
+    Gender NVARCHAR(50) CHECK (Gender IN ('Male', 'Female') OR Gender IS NULL),
+    PhotoURL NVARCHAR(255),
+    Biography NVARCHAR(1000),
+    MemberType NVARCHAR(10) NOT NULL  -- 'ACTOR' or 'DIRECTOR'
+);
 
-CREATE TABLE Nationality
-(
-NationalityID INT IDENTITY(1,1) PRIMARY KEY,
-Country NVARCHAR(80),
+CREATE TABLE Movie (
+    MovieID INT IDENTITY(1,1) PRIMARY KEY,
+    MovieLanguage VARCHAR(100),
+    DateOfRelease DATE,
+    MovieTitle NVARCHAR(150) NOT NULL,
+    MovieDescription NVARCHAR(600),
+    Duration INT NOT NULL CHECK (Duration > 0),
+    PosterURL NVARCHAR(255),
+    TrailerURL NVARCHAR(255),
+    AdminID NVARCHAR(50) NOT NULL,
+    DirectorID INT NOT NULL,
+    CONSTRAINT fk_admin FOREIGN KEY (AdminID)
+        REFERENCES [User](PhoneNumber)
+        ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT fk_director FOREIGN KEY (DirectorID)
+        REFERENCES MovieCrew(MemberID)
+        ON DELETE NO ACTION ON UPDATE CASCADE
 );
 
 
-CREATE TABLE Movie
-(
-MovieID INT IDENTITY(1,1) PRIMARY KEY, --<----start at 1 and inceremnt by 1
-MovieLanguage VARCHAR(100),
-DateOfRelease DATE,
-MovieTitle NVARCHAR(150) NOT NULL,
-MovieDescription NVARCHAR(600),
-Duration INT NOT NULL CHECK (Duration > 0),           --  <--- in MINUTESSSSSSS!!!!
-PosterURL NVARCHAR(255),
-TrailerURL NVARCHAR(255),
-AdminID NVARCHAR(50),
-DirectorID INT,
-CONSTRAINT fk_admin
-  FOREIGN KEY (AdminID) REFERENCES Administrator(AdminID),
-   ON DELETE CASCADE
-   ON UPDATE CASCADE
-CONSTRAINT fk_director
-   FOREIGN KEY (DirectorID) REFERENCES Director(DirectorID)
-   ON DELETE CASCADE
-   ON UPDATE CASCADE
+CREATE TABLE CastedFor (
+    MovieID INT NOT NULL,
+    ActorID INT NOT NULL,
+    RolePlayed NVARCHAR(100),
+    PRIMARY KEY (MovieID, ActorID),
+    CONSTRAINT fk_cast_movie FOREIGN KEY (MovieID)
+        REFERENCES Movie(MovieID)
+        ON DELETE CASCADE ON UPDATE CASCADE, -- This is fine: if the movie is deleted, the cast record is irrelevant.
+    CONSTRAINT fk_cast_actor FOREIGN KEY (ActorID)
+        REFERENCES MovieCrew(MemberID)
+        ON DELETE NO ACTION ON UPDATE NO ACTION -- This prevents deleting an actor who is still in a movie's cast.
 );
 
-
-
-CREATE TABLE CastedFor
-(
-movieID INT,
-actorID INT ,
-PRIMARY KEY(movieID,actorID),
-RolePlayed NVARCHAR(80),
-CONSTRAINT fk_movie
-   FOREIGN KEY (movieID) REFERENCES Movie(MovieID),
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-CONSTRAINT fk_actor
-   FOREIGN KEY (actorID) REFERENCES Actor(ActorID)
-    on delete cascade
-    on update cascade
+CREATE TABLE Genre (
+    GenreID INT IDENTITY(1,1) PRIMARY KEY,
+    GenreName NVARCHAR(80) UNIQUE NOT NULL
 );
 
-
-CREATE TABLE Genre
-(
-GenreID INT IDENTITY(1,1) PRIMARY KEY,
-GenreName NVARCHAR(80) UNIQUE
+CREATE TABLE MovieGenre (
+    GenreID INT NOT NULL,
+    MovieID INT NOT NULL,
+    PRIMARY KEY (GenreID, MovieID),
+    CONSTRAINT fk_moviegenre_genre FOREIGN KEY (GenreID)
+        REFERENCES Genre(GenreID)
+        ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT fk_moviegenre_movie FOREIGN KEY (MovieID)
+        REFERENCES Movie(MovieID)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE MovieGenre
-(
-genreID INT,
-movieID INT,
-PRIMARY KEY(genreID,movieID),
-CONSTRAINT fk_genre
-   FOREIGN KEY (genreID) REFERENCES Genre(GenreID),
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-CONSTRAINT fk_movie
-   FOREIGN KEY (movieID) REFERENCES Movie(MovieID)
-    on delete cascade
-    on update cascade
+CREATE TABLE Hall (
+    HallID INT IDENTITY(1,1) PRIMARY KEY,
+    Capacity INT NOT NULL CHECK (Capacity > 0)
 );
 
-
-CREATE TABLE Ticket
-(
-TicketID INT IDENTITY (1,1) PRIMARY KEY,
-BookTime DATE,
-customerID NVARCHAR(50),
-TicketPrice INT NOT NULL CHECK(TicketPrice>0),
-HallID INT IDENTITY (1,1),
-SeatNumber INT IDENTITY (1,1),
-CONSTRAINT fk_hall
-     FOREIGN KEY (HallID) REFERENCES Hall (HallID)
-         ON DELETE CASCADE
-         ON UPDATE CASCADE
-CONSTRAINT fk_costumer
-   FOREIGN KEY (customerID) REFERENCES User (CustomerID)
-constraint fk_seat
-    FOREIGN KEY (SeatNumber) REFERENCES Seat (SeatNumber)
-         ON DELETE CASCADE
-         ON UPDATE CASCADE
+CREATE TABLE Seat (
+    SeatNumber INT NOT NULL,
+    HallID INT NOT NULL,
+    PRIMARY KEY (SeatNumber, HallID),
+    CONSTRAINT fk_seat_hall FOREIGN KEY (HallID)
+        REFERENCES Hall(HallID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+        -- If a hall is deleted, delete all its seats
 );
 
-CREATE TABLE Hall
-(
-HallID INT IDENTITY (1,1) PRIMARY KEY,
-Capacity INT NOT NULL
+CREATE TABLE Ticket (
+    TicketID INT IDENTITY (1,1) PRIMARY KEY,
+    BookTime DATE NOT NULL,
+    CustomerID NVARCHAR(50) NOT NULL,
+    TicketPrice INT NOT NULL CHECK(TicketPrice > 0),
+    HallID INT NOT NULL,
+    SeatNumber INT NOT NULL,
+    CONSTRAINT fk_ticket_hall FOREIGN KEY (HallID)
+        REFERENCES Hall(HallID)
+        ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT fk_ticket_customer FOREIGN KEY (CustomerID)
+        REFERENCES [User](PhoneNumber)
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_ticket_seat FOREIGN KEY (SeatNumber, HallID)
+        REFERENCES Seat(SeatNumber, HallID)
+        ON DELETE NO ACTION ON UPDATE NO ACTION
+        -- Tickets should not vanish automatically when seats/users are deleted
 );
 
-CREATE TABLE Seat
-(
-SeatNumber INT IDENTITY (1,1) ,
-hallID INT NOT NULL,
-PRIMARY KEY (SeatNumber,hallID),
-CONSTRAINT fk_hall
-   FOREIGN KEY (hallID) REFERENCES Hall(HallID)
-       ON DELETE CASCADE
-       ON UPDATE CASCADE
+CREATE TABLE Screening (
+    ScreeningID INT IDENTITY(1,1) PRIMARY KEY,
+    StartTime DATETIME NOT NULL,
+    MovieID INT NOT NULL,
+    HallID INT NOT NULL,
+    TicketPrice INT NOT NULL,
+    CONSTRAINT fk_screening_movie FOREIGN KEY (MovieID)
+        REFERENCES Movie(MovieID)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_screening_hall FOREIGN KEY (HallID)
+        REFERENCES Hall(HallID)
+        ON DELETE NO ACTION ON UPDATE CASCADE
+        -- If a movie is deleted, remove its screenings
+        -- If a hall is deleted, block unless screenings are reassigned
 );
 
-
-CREATE TABLE Screening
-(
-ScreeningID INT IDENTITY(1,1) PRIMARY KEY,
-StartTime DATETIME NOT NULL,
-movieID INT NOT NULL ,
-hallID INT NOT NULL,
-CONSTRAINT fk_movie
-   FOREIGN KEY (movieID) REFERENCES Movie(MovieID),
-CONSTRAINT fk_hall
-   FOREIGN KEY (hallID) REFERENCES Hall(HallID)
-       ON DELETE CASCADE
-       ON UPDATE CASCADE
+CREATE TABLE Reservation (
+    ScreeningID INT NOT NULL,
+    TicketID INT NOT NULL,
+    SeatNumber INT NOT NULL,
+    HallID INT NOT NULL,
+    PRIMARY KEY (ScreeningID, TicketID, SeatNumber, HallID),
+    CONSTRAINT fk_reservation_screening FOREIGN KEY (ScreeningID)
+        REFERENCES Screening(ScreeningID)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_reservation_ticket FOREIGN KEY (TicketID)
+        REFERENCES Ticket(TicketID)
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_reservation_seat FOREIGN KEY (SeatNumber, HallID)
+        REFERENCES Seat(SeatNumber, HallID)
+        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-
-CREATE TABLE Reservation
-(
-screeningID INT NOT NULL,
-ticketID INT NOT NULL,
-SeatNumber INT NOT NULL,
-hallID INT NOT NULL,
-PRIMARY KEY (screeningID,ticketID,SeatNumber,hallID),
-CONSTRAINT fk_screening
-  FOREIGN KEY (screeningID) REFERENCES Screening(ScreeningID),
-ON DELETE CASCADE
-         ON UPDATE CASCADE
-CONSTRAINT fk_ticket
-  FOREIGN KEY (ticketID) REFERENCES Ticket(TicketID),
-ON DELETE CASCADE
-         ON UPDATE CASCADE
-CONSTRAINT fk_seat
-  FOREIGN KEY (SeatNumber, hallID) REFERENCES Seat(SeatNumber,HallID)
-ON DELETE CASCADE
-         ON UPDATE CASCADE
+CREATE TABLE MemberNationality (
+    NationalityID INT NOT NULL,
+    MemberID INT NOT NULL,
+    PRIMARY KEY (NationalityID, MemberID),
+    FOREIGN KEY (NationalityID) REFERENCES Nationality(NationalityID)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION,
+    FOREIGN KEY (MemberID) REFERENCES MovieCrew(MemberID)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
 );

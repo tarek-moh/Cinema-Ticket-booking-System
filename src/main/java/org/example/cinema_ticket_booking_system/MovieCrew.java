@@ -1,7 +1,6 @@
 package org.example.cinema_ticket_booking_system;
 
 import javax.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,13 +30,11 @@ public class MovieCrew {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MemberNationality> nationalities = new HashSet<>();
 
-    protected MovieCrew() {
-    }
 
-    public MovieCrew(String fullName, String memberType) {
-        setFullName(fullName);
-        setMemberType(memberType);
-    }
+        @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, orphanRemoval = true)
+        private Set<Cast> moviesActedIn = new HashSet<>();
+
+
 
     // Getters and Setters
     public Integer getMemberId() {
@@ -47,6 +44,20 @@ public class MovieCrew {
     public String getFullName() {
         return fullName;
     }
+        protected MovieCrew() {}
+
+        public MovieCrew(String fullName, String memberType) {
+            setFullName(fullName);
+            setMemberType(memberType);
+        }
+
+        public MovieCrew(String fullName, String memberType, String gender,
+                         String photoUrl, String biography) {
+            this(fullName, memberType); // ensure required ones
+            setGender(gender);          // optional
+            setPhotoUrl(photoUrl);      // optional
+            setBiography(biography);    // optional
+        }
 
     public void setFullName(String fullName) {
         if (fullName != null && fullName.trim().length() > 100)
@@ -100,12 +111,14 @@ public class MovieCrew {
         this.memberType = memberType.toUpperCase();
     }
 
-    public Set<MemberNationality> getNationalities() {
-        return nationalities;
-    }
+        public Set<MemberNationality> getNationalities() { return nationalities; }
+        public void setNationalities(Set<MemberNationality> nationalities) { this.nationalities = nationalities; }
 
-    public void setNationalities(Set<MemberNationality> nationalities) {
-        this.nationalities = nationalities;
-    }
+        public Set<Cast> getMoviesActedIn() { return moviesActedIn; }
 
-}
+        @Override
+        public String toString()
+        {
+            return this.fullName;
+        }
+    }

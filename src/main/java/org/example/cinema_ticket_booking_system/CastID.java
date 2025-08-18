@@ -5,20 +5,26 @@ import javax.persistence.*;
 
 
 public class CastID implements Serializable {
-    private Integer movie;
-    private Integer actorId;
+    private Integer movie;   // refers to MovieID
+    private Integer actor;   // refers to MovieCrew.MemberID
 
     public CastID() {}
-    public CastID(Integer movie, Integer actorId) {
+    public CastID(Integer movie, Integer actor) {
         this.movie = movie;
-        this.actorId = actorId; }
+        this.actor = actor;
+    }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CastID)) return false;
         CastID that = (CastID) o;
-        return Objects.equals(movie, that.movie) && Objects.equals(actorId, that.actorId);
+        return Objects.equals(movie, that.movie) &&
+                Objects.equals(actor, that.actor);
     }
-    @Override public int hashCode() { return Objects.hash(movie, actorId); }
-}
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(movie, actor);
+    }
+}

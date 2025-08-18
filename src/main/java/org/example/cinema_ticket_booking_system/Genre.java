@@ -2,7 +2,6 @@ package org.example.cinema_ticket_booking_system;
 
 import javax.persistence.*;
 
-
 @Entity
 @Table(name = "Genre",
        uniqueConstraints = @UniqueConstraint(name = "uk_genre_name", columnNames = "GenreName"))

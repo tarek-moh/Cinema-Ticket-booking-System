@@ -4,7 +4,6 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "Hall")
-//@Access(AccessType.PROPERTY)  //  Hibernate now looks at getters
 public class Hall {
 
     @Id
@@ -35,9 +34,6 @@ public class Hall {
 
     @Override
     public String toString() {
-        return "Hall{" +
-                "HallID=" + hallID +
-                ", Capacity=" + capacity +
-                '}';
+        return "Hall " + hallID;
     }
 }

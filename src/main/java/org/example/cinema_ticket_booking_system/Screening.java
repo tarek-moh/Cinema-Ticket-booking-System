@@ -1,20 +1,12 @@
 package org.example.cinema_ticket_booking_system;
 
 import javax.persistence.*;
-
-import org.hibernate.annotations.Check;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.Check;
 
 @Entity
 @Table(name = "Screening")
 @Check(constraints = "TicketPrice>0")
-//@NamedNativeQuery(
-//        name = "GetMovieScreeningsWithAvailableSeats",
-//        query = "EXEC GetMovieScreeningsWithAvailableSeats :movieID",
-//        resultSetMapping = "ScreeningWithAvailableSeatsMapping"
-//)
 public class Screening {
 
     @Id

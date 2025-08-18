@@ -1,8 +1,6 @@
 package org.example.cinema_ticket_booking_system;
 
 import javax.persistence.*;
-
-
 import java.io.Serializable;
 
 @Embeddable
