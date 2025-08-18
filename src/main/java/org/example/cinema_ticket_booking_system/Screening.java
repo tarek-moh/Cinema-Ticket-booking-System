@@ -70,6 +70,7 @@ public class Screening {
         StartTime = startTime;
     }
 
+
     @Override
     public String toString() {
         return "Screening{" +

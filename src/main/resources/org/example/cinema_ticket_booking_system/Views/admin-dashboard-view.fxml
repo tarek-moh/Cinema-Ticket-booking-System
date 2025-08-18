@@ -62,7 +62,7 @@
                     <Label text="Add New Director" style="-fx-font-weight: bold;"/>
                     <TextField fx:id="directorNameField" promptText="Name"/>
                     <TextArea fx:id="directorBioField" promptText="Biography" prefRowCount="2"/>
-                    <TextField fx:id="directorGenderField" promptText="Gender"/>
+                    <TextField fx:id="directorGenderField" promptText="Gender 'Male' - 'Female' "/>
                     <TextField fx:id="directorPhotoField" promptText="Photo URL"/>
                     <TextField fx:id="directorMoviesField" promptText="No. of Movies Directed"/>
                     <HBox spacing="5">

@@ -27,16 +27,12 @@ public class Hall {
         Capacity = capacity;
     }
 
-
-//    public void setHallID(int hallID) {
-//        this.HallID = hallID;
-//    }
+    public void setHallID(int hallID) {
+        this.HallID = hallID;
+    }
 
     @Override
     public String toString() {
-        return "Hall{" +
-                "HallID=" + HallID +
-                ", Capacity=" + Capacity +
-                '}';
+        return "Hall " + HallID;
     }
 }

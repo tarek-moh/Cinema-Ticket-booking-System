@@ -1,6 +1,6 @@
 package org.example.cinema_ticket_booking_system.DAOs;
 
-import org.example.cinema_ticket_booking_system.Screening;
+import org.example.cinema_ticket_booking_system.Hall;
 import org.example.cinema_ticket_booking_system.SessionFactoryProvider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,71 +8,59 @@ import org.hibernate.Transaction;
 
 import java.util.List;
 
-public class ScreeningDAO {
+public class HallDAO {
 
     private final SessionFactory sessionFactory;
 
-    public ScreeningDAO() {
+    public HallDAO() {
         this.sessionFactory = SessionFactoryProvider.provideSessionFactory();
     }
 
-    public ScreeningDAO(SessionFactory sessionFactory) {
+    public HallDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    // -------------------- CREATE --------------------
-    public void save(Screening screening) {
+    // ✅ Find all halls
+    public List<Hall> findAll() {
         Transaction tx = null;
+        List<Hall> halls = null;
+
         try (Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
-            session.save(screening);
+            halls = session.createQuery("from Hall", Hall.class).getResultList();
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         }
-    }
-    // -------------------- Save or Update --------------------
 
-    public void saveOrUpdate(Screening screening) {
+        return halls;
+    }
+
+    // ✅ Find hall by ID
+    public Hall findById(int id) {
         Transaction tx = null;
+        Hall hall = null;
+
         try (Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
-            session.saveOrUpdate(screening);
+            hall = session.get(Hall.class, id);
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         }
+
+        return hall;
     }
 
-    // -------------------- READ --------------------
-    public Screening findById(int id) {
-        Screening screening = null;
-        try (Session session = sessionFactory.openSession()) {
-            screening = session.get(Screening.class, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return screening;
-    }
-
-    public List<Screening> findAll() {
-        List<Screening> screenings = null;
-        try (Session session = sessionFactory.openSession()) {
-            screenings = session.createQuery("from Screening", Screening.class).getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return screenings;
-    }
-
-    // -------------------- UPDATE --------------------
-    public void update(Screening screening) {
+    // ✅ Save new hall
+    public void save(Hall hall) {
         Transaction tx = null;
+
         try (Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
-            session.update(screening);
+            session.save(hall);
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
@@ -80,12 +68,27 @@ public class ScreeningDAO {
         }
     }
 
-    // -------------------- DELETE --------------------
-    public void delete(Screening screening) {
+    // ✅ Update hall
+    public void update(Hall hall) {
         Transaction tx = null;
+
         try (Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
-            session.delete(screening);
+            session.update(hall);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        }
+    }
+
+    // ✅ Delete hall
+    public void delete(Hall hall) {
+        Transaction tx = null;
+
+        try (Session session = sessionFactory.openSession()) {
+            tx = session.beginTransaction();
+            session.delete(hall);
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
