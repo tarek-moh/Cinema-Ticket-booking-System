@@ -2,6 +2,8 @@ package org.example.cinema_ticket_booking_system;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Movie")
@@ -41,11 +43,31 @@ public class Movie {
     private MovieCrew director;
 
 
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Cast> castMembers = new HashSet<>();
+
+
     protected Movie() {}
 
     public Movie(String title, Integer durationMinutes) {
         setTitle(title);
         setDurationMinutes(durationMinutes);
+    }
+
+    public Set<Cast> getCastMembers() { return castMembers; }
+
+    public void addActor(MovieCrew actor, String role) {
+        Cast cast = new Cast(this, actor, role);
+        castMembers.add(cast);
+    }
+
+    public void removeActor(MovieCrew actor) {
+        castMembers.removeIf(c -> c.getActor().equals(actor));
+    }
+
+    public Set<Cast> getCast()
+    {
+        return castMembers;
     }
 
     public Integer getId() { return id; }
@@ -97,10 +119,16 @@ public class Movie {
     }
 
     public User getAdmin() { return admin; }
-    public void setAdminId(User admin) {
+    public void setAdmin(User admin) {
         this.admin = admin;
     }
 
     public MovieCrew getDirector() { return director;}
     public void setDirector(MovieCrew director) { this.director = director; }
+
+    @Override
+    public String toString()
+    {
+        return this.title;
+    }
 }
