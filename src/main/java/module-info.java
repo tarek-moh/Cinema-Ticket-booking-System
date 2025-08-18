@@ -10,6 +10,7 @@ module org.example.cinema_ticket_booking_system {
 
     // Add this line to resolve the javax.naming error
     requires java.naming;
+    requires jbcrypt;
 
 
     opens org.example.cinema_ticket_booking_system to javafx.fxml, org.hibernate.orm.core;

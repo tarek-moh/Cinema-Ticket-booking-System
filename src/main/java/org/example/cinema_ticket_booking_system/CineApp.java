@@ -13,7 +13,7 @@ public class CineApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(CineApp.class.getResource("Views/movie-browser-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(CineApp.class.getResource("Views/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 780);
         stage.setTitle("CineApp");
         stage.setScene(scene);
