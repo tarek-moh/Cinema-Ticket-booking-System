@@ -65,13 +65,6 @@ public class MovieBrowserController implements Initializable {
     private SessionFactory sessionFactory;
     private Screening currentScreening;
     private Hall currentHall;
-    private User currentUser;
-
-
-    // In a real app, you would fetch this movie data from a database
-//    private final String[] moviePosters = {
-//            "/images/movie1.jpg", "/images/movie2.jpg"    };
-
 
     private void setUpHibernate() {
         try {
@@ -83,6 +76,13 @@ public class MovieBrowserController implements Initializable {
         }
     }
 
+    // ----------------------- session  -----------------------
+    private User currentUser;
+
+    public void setLoggedUser(User user)
+    {
+        this.currentUser = user;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -91,7 +91,6 @@ public class MovieBrowserController implements Initializable {
 
         loadMovies();
     }
-
 
     private void loadMovies() {
         Session session = null;
@@ -120,8 +119,16 @@ public class MovieBrowserController implements Initializable {
         movieCard.getStyleClass().add("movie-card");
 
         // Poster Image
-        Image posterImage = new Image(movie.getPosterUrl());
-        ImageView posterView = new ImageView(posterImage);
+
+        ImageView posterView = null;
+        try {
+            Image posterImage = new Image(movie.getPosterUrl());
+            posterView = new ImageView(posterImage);
+        } catch (Exception e) {
+           System.out.println("Error Loading poster");
+            Image posterImage = new Image(getClass().getResourceAsStream("/MoviePoster.jpg"));
+            posterView = new ImageView(posterImage);
+        }
         posterView.setFitWidth(200);
         posterView.setPreserveRatio(true);
         posterView.getStyleClass().add("movie-poster");
@@ -163,7 +170,13 @@ public class MovieBrowserController implements Initializable {
         movieDetailsTitle.setText(movie.getTitle());
         movieDetailsDescription.setText(movie.getDescription());
         // 1. Display the movie poster
-        Image posterImage = new Image(movie.getPosterUrl(), true);
+        Image posterImage = null;
+        try {
+            posterImage = new Image(movie.getPosterUrl(), true);
+        } catch (Exception e) {
+            System.out.println("Error Loading poster");
+            posterImage = new Image(getClass().getResourceAsStream("/MoviePoster.jpg"));
+        }
         movieDetailsPoster.setImage(posterImage);
 
        // String directorName = getDirectorName(movie.getDirector().getMemberId());
@@ -237,11 +250,10 @@ public class MovieBrowserController implements Initializable {
 
         try {
             session = sessionFactory.openSession();
-            User user = session.get(User.class, "01110000001");
             // Use JOIN FETCH to eagerly load the associated Screening and Seat data
             Query<Ticket> ticketQuery = session.createQuery(
                     "FROM Ticket t JOIN FETCH t.screening JOIN FETCH t.seat WHERE t.customer.phoneNumber = :customerPhoneNumber", Ticket.class);
-            ticketQuery.setParameter("customerPhoneNumber", user.getPhoneNumber());
+            ticketQuery.setParameter("customerPhoneNumber", currentUser.getPhoneNumber());
             List<Ticket> userTickets = ticketQuery.list();
             // Add this line to see what the database returns
             System.out.println("Tickets found for user: " + userTickets.size());
@@ -443,8 +455,7 @@ public class MovieBrowserController implements Initializable {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
 
-            User user = session.get(User.class, "01110000001");
-            if (user == null) {
+            if (currentUser == null) {
                 showAlert("Error", "Dummy user not found. Cannot complete booking.");
                 transaction.rollback();
                 return;
@@ -480,7 +491,7 @@ public class MovieBrowserController implements Initializable {
                 ticket.setSeat(seat);
                 ticket.setBookTime(new Date());
                 ticket.setTicketPrice(100);
-                ticket.setCustomer(user);
+                ticket.setCustomer(currentUser);
                 session.save(ticket);
                 System.out.println(ticket.getTicketID());
 

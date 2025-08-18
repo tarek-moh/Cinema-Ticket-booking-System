@@ -3,6 +3,8 @@ package org.example.cinema_ticket_booking_system;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -12,6 +14,8 @@ import javafx.stage.Stage;
 import org.example.cinema_ticket_booking_system.DAOs.UserDAO;
 import org.hibernate.SessionFactory;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.io.IOException;
 
 
 public class LoginController {
@@ -57,16 +61,47 @@ public class LoginController {
             return;
         }
 
-        // Compare hash
+// Compare hash
         if (BCrypt.checkpw(password, user.getPasswordHash())) {
             if ("ADMIN".equalsIgnoreCase(user.getUserType())) {
-                loadScene("Views/admin-dashboard-view.fxml", "Admin Dashboard");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Views/admin-dashboard-view.fxml"));
+                Parent root = null;
+                try {
+                    root = loader.load();
+                } catch (IOException e) {
+                    showAlert("view Error", "Couldn't load the admin dashboard");
+                }
+
+                // Get controller
+                AdminDashboardController controller = loader.getController();
+                controller.setLoggedUser(user); // pass user to controller
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setTitle("Admin Dashboard");
+                stage.setScene(new Scene(root));
+                stage.show();
+
             } else {
-                loadScene("Views/movie-browser-view.fxml", "Movie Browser");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Views/movie-browser-view.fxml"));
+                Parent root = null;
+                try {
+                    root = loader.load();
+                } catch (IOException e) {
+                    showAlert("view Error", "Couldn't load the admin dashboard");
+                }
+                // Get controller
+                MovieBrowserController controller = loader.getController();
+                controller.setLoggedUser(user); // pass user to controller
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setTitle("Movie Browser");
+                stage.setScene(new Scene(root));
+                stage.show();
             }
         } else {
             showAlert("Login Failed", "Invalid email or password.");
         }
+
     }
 
     @FXML

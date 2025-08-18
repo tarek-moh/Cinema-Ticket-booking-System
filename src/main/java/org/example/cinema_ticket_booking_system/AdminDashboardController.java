@@ -65,6 +65,14 @@ public class AdminDashboardController {
     private UserDAO userDAO;
     private HallDAO hallDAO;
 
+    // ----------------------- session  -----------------------
+    private User currentAdminUser;
+
+    public void setLoggedUser(User user)
+    {
+        this.currentAdminUser = user;
+    }
+
     // ----------------------- Initialization -----------------------
     @FXML
     public void initialize() {
@@ -248,8 +256,6 @@ public class AdminDashboardController {
             movie.setDateOfRelease(releaseDate);
             movie.setDirector(director);
 
-            // TODO: set admin when available
-            User currentAdminUser = userDAO.findByPhone("01110000002"); // Dummy Admin
             movie.setAdmin(currentAdminUser);
 
             for (CheckBox cb : actorListView.getItems()) {
