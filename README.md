@@ -87,7 +87,7 @@ These accounts allow you to explore both the administrative dashboard and the cu
 ## 📊 Sequence & Design Diagrams
 The following diagrams provide insight into system design and flow:
 
-- **Use Case Diagram:** ![Use Case](docs/Usecase.drawio.drawio.png)  
+- **Use Case Diagram:** ![Use Case](docs/Usecase.drawio.drawio.jpg)  
 - Rest of Diagrams are in Docs folder.
 
 ---
