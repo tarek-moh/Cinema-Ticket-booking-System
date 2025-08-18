@@ -1,10 +1,12 @@
 package org.example.cinema_ticket_booking_system;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 
 import java.io.Serializable;
 
 @Embeddable
+ //  force Hibernate to use getters
 public class ReservationID implements Serializable {
 
     @Column(nullable = false)
@@ -18,6 +20,13 @@ public class ReservationID implements Serializable {
 
     @Column(nullable = false)
     private int ticketID;
+
+    public ReservationID(int screeningID, int ticketID, SeatID seatID, int hallID) {
+        this.screeningID = screeningID;
+        this.ticketID = ticketID;
+        this.SeatNumber= seatID.getSeatNumber();
+        this.hallID = hallID;
+    }
 
 
     public int getHallID() {
@@ -56,15 +65,21 @@ public class ReservationID implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SeatID)) return false;
-        SeatID seatID = (SeatID) o;
-        return SeatNumber == seatID.getSeatNumber() &&
-                hallID == seatID.getHallID();
+        if (!(o instanceof ReservationID)) return false;
+        ReservationID that = (ReservationID) o;
+        return screeningID == that.screeningID &&
+                SeatNumber == that.SeatNumber &&
+                hallID == that.hallID &&
+                ticketID == that.ticketID;
     }
 
     @Override
     public int hashCode() {
-        return 31 * Integer.hashCode(SeatNumber) + Integer.hashCode(hallID);
+        int result = Integer.hashCode(screeningID);
+        result = 31 * result + Integer.hashCode(SeatNumber);
+        result = 31 * result + Integer.hashCode(hallID);
+        result = 31 * result + Integer.hashCode(ticketID);
+        return result;
     }
 
 

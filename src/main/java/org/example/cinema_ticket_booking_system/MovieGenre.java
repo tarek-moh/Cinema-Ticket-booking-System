@@ -1,6 +1,7 @@
 package org.example.cinema_ticket_booking_system;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 
 @Entity
 @Table(name = "MovieGenre")

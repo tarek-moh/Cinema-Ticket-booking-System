@@ -1,6 +1,6 @@
 package org.example.cinema_ticket_booking_system;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Nationality")
@@ -10,7 +10,7 @@ public class Nationality {
     @Column(name = "NationalityID")
     private Integer id;
 
-    @Column(name = "Country", length = 80)
+    @Column(name = "Country", length = 80, columnDefinition = "NVARCHAR(80)")
     private String country;
 
     protected Nationality() {}

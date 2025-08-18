@@ -1,6 +1,7 @@
 package org.example.cinema_ticket_booking_system;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 
 
 @Entity
@@ -25,9 +26,12 @@ public class Seat {
 /// can not increment the seatNumber directly we will need to increment it manuallyyy!!!!
     public Seat(Hall hall, int seatNumber) {
         this.hall = hall;
-        this.seatID = new SeatID();
+        this.seatID = new SeatID(seatNumber,hall.getHallID());
         this.seatID.setHallID(hall.getHallID());
-        this.seatID.setseatNumber(seatNumber);
+        this.seatID.setSeatNumber(seatNumber);
+    }
+    public Seat(){
+
     }
 
     @Override

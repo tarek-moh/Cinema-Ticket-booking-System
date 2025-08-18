@@ -1,5 +1,6 @@
 package org.example.cinema_ticket_booking_system;
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import org.example.cinema_ticket_booking_system.Movie;
 
 @Entity

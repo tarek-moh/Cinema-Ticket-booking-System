@@ -1,6 +1,6 @@
 package org.example.cinema_ticket_booking_system;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -17,26 +17,29 @@ public class Movie {
     @Column(name = "DateOfRelease")
     private LocalDate dateOfRelease;
 
-    @Column(name = "MovieTitle", nullable = false, length = 150)
+    @Column(name = "MovieTitle", nullable = false, length = 150, columnDefinition = "NVARCHAR(150)")
     private String title;
 
-    @Column(name = "MovieDescription", length = 600)
+    @Column(name = "MovieDescription", length = 600, columnDefinition = "NVARCHAR(600)")
     private String description;
 
     @Column(name = "Duration", nullable = false)
     private Integer durationMinutes;
 
-    @Column(name = "PosterURL", length = 255)
+    @Column(name = "PosterURL", length = 255, columnDefinition = "NVARCHAR(255)")
     private String posterUrl;
 
-    @Column(name = "TrailerURL", length = 255)
+    @Column(name = "TrailerURL", length = 255,columnDefinition = "NVARCHAR(255)")
     private String trailerUrl;
 
-    @Column(name = "AdminID", length = 50)
-    private String adminId;
+    @ManyToOne
+    @JoinColumn(name = "AdminID", foreignKey = @ForeignKey(name = "fk_admin"))
+    private User adminId;
 
-    @Column(name = "DirectorID")
-    private Integer directorId;
+    @ManyToOne
+    @JoinColumn(name = "DirectorID", foreignKey = @ForeignKey(name = "fk_director"))
+    private MovieCrew director;
+
 
     protected Movie() {}
 
@@ -93,13 +96,13 @@ public class Movie {
         this.trailerUrl = trailerUrl;
     }
 
-    public String getAdminId() { return adminId; }
-    public void setAdminId(String adminId) {
-        if (adminId != null && adminId.length() > 50)
-            throw new IllegalArgumentException("adminId max length is 50");
-        this.adminId = adminId;
-    }
+    public User getAdminId() { return adminId; }
+//    public void setAdminId(User adminId) {
+//        if (adminId != null && adminId.length() > 50)
+//            throw new IllegalArgumentException("adminId max length is 50");
+//        this.adminId = adminId;
+//    }
 
-    public Integer getDirectorId() { return directorId; }
-    public void setDirectorId(Integer directorId) { this.directorId = directorId; }
+    public MovieCrew getDirector() { return director;}
+    public void setDirector(MovieCrew director) { this.director = director; }
 }

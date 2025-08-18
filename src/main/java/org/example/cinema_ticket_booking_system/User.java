@@ -1,104 +1,86 @@
 package org.example.cinema_ticket_booking_system;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
+import javax.validation.constraints.*;
+import org.hibernate.validator.constraints.Length;
+
+import java.util.List;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)  // one table for all subclasses
-@DiscriminatorColumn(name = "UserType", discriminatorType = DiscriminatorType.STRING)
-@Table(name = "user",uniqueConstraints = {
-        @UniqueConstraint(name = "uk_user_email",    columnNames = "Email"),
-        @UniqueConstraint(name = "uk_user_customer", columnNames = "CustomerID"),
-        @UniqueConstraint(name = "uk_user_admin",    columnNames = "AdminID")
-})
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)  // One table for all subclasses
+@DiscriminatorColumn(name = "UserType", discriminatorType = DiscriminatorType.STRING, columnDefinition = "nvarchar(10)")
+@Table(
+        name = "[User]", // matches SQL table
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_user_email", columnNames = "Email")
+        }
+)
 public class User {
+
     @Id
-    @Column(name="PhoneNumber")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "PhoneNumber", length = 50, columnDefinition = "NVARCHAR(50)")
+    @Length(min = 11, max = 11)
     private String phoneNumber;
-    @Column(name="FullName")
-    private String name;
-    @Column(name="Email")
+
+    @Column(name="FullName", length = 100, columnDefinition = "NVARCHAR(100)")
+    private String fullName;
+
+    @Column(name = "Email", length = 100, nullable = false, unique = true, columnDefinition = "NVARCHAR(100)")
+    @NotBlank(message = "Email is required")
+    @Email(message = "Must be a valid email format")
+    @Pattern(
+            regexp = "^[A-Za-z0-9._%+-]+@(gmail\\.com|yahoo\\.com|ymail\\.com|outlook\\.com|hotmail\\.com|live\\.com|msn\\.com|icloud\\.com|me\\.com|proton\\.me|protonmail\\.com)$",
+            message = "Only common providers (Gmail, Yahoo, Outlook, Hotmail, Live, MSN, iCloud, Me, Proton) are allowed"
+    )
     private String email;
-    @Column(name="PasswordHash")
-    private String passwordhash;
+
+    @Column(name="PasswordHash", nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    private String passwordHash;
+
+    @Column(name="UserType", nullable = false, length = 10, insertable = false, updatable = false)
+    private String userType; // handled by @DiscriminatorColumn
+
+    // A user can book many tickets
+    @OneToMany(mappedBy="customer", cascade = CascadeType.ALL)
+    private List<Ticket> tickets;
 
     // Default constructor
-    protected User() {
-    }
+    protected User() {}
 
     // Parameterized constructor
-    protected User(String phoneNumber, String name, String email, String password) {
+    protected User(String phoneNumber, String fullName, String email, String passwordHash) {
         this.phoneNumber = phoneNumber;
-        this.name = name;
+        this.fullName = fullName;
         this.email = email;
-        this.passwordhash = passwordhash;
+        this.passwordHash = passwordHash;
     }
 
     // Getters and Setters
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+    public String getPhoneNumber() { return phoneNumber; }
 
-    public String getName() {
-        return name;
-    }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getUserType() { return userType; }
 
-    public String getPassword() {
-        return passwordhash;
-    }
+    public List<Ticket> getTickets() { return tickets; }
+    public void setTickets(List<Ticket> tickets) { this.tickets = tickets; }
 
-    public void setPassword(String password) {
-        this.passwordhash = passwordhash;
-    }
+    // Phone validation
     boolean isValidPhoneNo(String phoneNumber) {
-        if(phoneNumber.length()!=11)
-        {
-            return false;
-        }
-        for(int i=0; i<phoneNumber.length();i++)
-        {
-            if(!Character.isDigit(phoneNumber.charAt(i)))
-            {
-                return false;
-            }
+        if (phoneNumber.length() != 11) return false;
+        for (int i = 0; i < phoneNumber.length(); i++) {
+            if (!Character.isDigit(phoneNumber.charAt(i))) return false;
         }
         return true;
     }
-    boolean isValidEmail(String email) {
-        if (email.toLowerCase().endsWith("@gmail.com") ||
-                email.toLowerCase().endsWith("@yahoo.com") ||
-                email.toLowerCase().endsWith("@ymail.com") ||
-                email.toLowerCase().endsWith("@outlook.com") ||
-                email.toLowerCase().endsWith("@hotmail.com") ||
-                email.toLowerCase().endsWith("@live.com") ||
-                email.toLowerCase().endsWith("@msn.com") ||
-                email.toLowerCase().endsWith("@icloud.com") ||
-                email.toLowerCase().endsWith("@me.com") ||
-                email.toLowerCase().endsWith("@proton.me") ||
-                email.toLowerCase().endsWith("@protonmail.com")) {
-
-            return true;
-        } else {
-            throw new IllegalArgumentException("Invalid email address");
-        }
-    }
-    boolean isValidPassword(String passwordhash) {
-        if (passwordhash.length()<8) {
-            throw new IllegalArgumentException("Password must contain at least 8 characters");
-        }
-        return true;
-    }
-    }
-
+}
