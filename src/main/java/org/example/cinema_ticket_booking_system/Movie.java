@@ -19,19 +19,19 @@ public class Movie {
     @Column(name = "DateOfRelease")
     private LocalDate dateOfRelease;
 
-    @Column(name = "MovieTitle", nullable = false, length = 150)
+    @Column(name = "MovieTitle", nullable = false, length = 150, columnDefinition = "NVARCHAR(150)")
     private String title;
 
-    @Column(name = "MovieDescription", length = 600)
+    @Column(name = "MovieDescription", length = 600, columnDefinition = "NVARCHAR(600)")
     private String description;
 
     @Column(name = "Duration", nullable = false)
     private Integer durationMinutes;
 
-    @Column(name = "PosterURL", length = 255)
+    @Column(name = "PosterURL", length = 255, columnDefinition = "NVARCHAR(255)")
     private String posterUrl;
 
-    @Column(name = "TrailerURL", length = 255)
+    @Column(name = "TrailerURL", length = 255,columnDefinition = "NVARCHAR(255)")
     private String trailerUrl;
 
     @ManyToOne

@@ -166,3 +166,91 @@
     -fx-background-color: #00A8E1;
     -fx-background-radius: 5em;
 }
+
+/* Seat buttons */
+.seat-button {
+    -fx-min-width: 25px; /* Adjust this value */
+    -fx-min-height: 25px; /* Adjust this value */
+    -fx-max-width: 25px;
+    -fx-max-height: 25px;
+    -fx-background-color: #333333;
+    -fx-border-color: #555555;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.seat-button:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.seat-button.available {
+    -fx-background-color: #007bff; /* A blue color for available seats */
+}
+
+.seat-button.available:hover {
+    -fx-background-color: #0056b3;
+}
+
+.seat-button.reserved {
+    -fx-background-color: #ff0000; /* A red color for reserved seats */
+    -fx-opacity: 0.5;
+}
+
+.seat-button.selected {
+    -fx-background-color: #28a745; /* A green color for selected seats */
+}
+
+.seat-button.selected:hover {
+    -fx-background-color: #1e7e34;
+}
+
+<pre><code>.screen-label {
+-fx-font-size: 24px;
+-fx-font-weight: bold;
+-fx-text-fill: #E0E0E0;
+-fx-background-color: #1a2a3a;
+-fx-padding: 10px 0;
+-fx-alignment: center;
+-fx-pref-width: 600px; /* Use a fixed width */
+-fx-max-width: 500px; / Add a maximum width /
+-fx-pref-height: 40px; / Adjust height as needed /
+-fx-margin-top: 20px; / Add some space between seats and screen */
+}
+</code></pre>
+
+
+/* Add this to your existing CSS file */
+.dark-button {
+    -fx-background-color: #37474F; /* A dark, subtle blue-gray */
+    -fx-text-fill: #ECEFF1; /* Light gray text for contrast */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand; /* Changes the cursor to a hand on hover */
+}
+
+.dark-button:hover {
+    -fx-background-color: #455A64; /* A slightly lighter shade on hover */
+}
+
+.dark-button:pressed {
+    -fx-background-color: #263238; /* A darker shade when pressed */
+}
+
+/* Add this to your existing CSS file */
+.ticket-card {
+    /* Existing styles here */
+    -fx-border-color: #334E68; /* A dark color for the separator */
+    -fx-border-width: 0 0 1px 0; /* Apply only to the bottom border */
+    -fx-padding: 15px; /* Add some padding to give space for the separator */
+}
+
+/* Add this to your existing CSS file */
+.ticket-card:hover {
+    -fx-background-color: #1A2A3A; /* A slightly lighter background color on hover */
+    -fx-cursor: hand; /* Change the cursor to a hand to indicate it's interactive */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.5, 0, 0); /* Optional: add a subtle shadow */
+}

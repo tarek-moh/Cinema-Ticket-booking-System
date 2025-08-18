@@ -1,13 +1,8 @@
 package org.example.cinema_ticket_booking_system;
 
-import org.hibernate.annotations.*;
-
-
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.Check;
 
 @Entity
 @Table(name = "Screening")
@@ -69,7 +64,6 @@ public class Screening {
     public void setStartTime(LocalDateTime startTime) {
         StartTime = startTime;
     }
-
 
     @Override
     public String toString() {

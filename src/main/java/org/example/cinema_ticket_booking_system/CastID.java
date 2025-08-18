@@ -1,6 +1,8 @@
 package org.example.cinema_ticket_booking_system;
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.*;
+
 
 public class CastID implements Serializable {
     private Integer movie;   // refers to MovieID

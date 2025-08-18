@@ -10,7 +10,7 @@ public class Nationality {
     @Column(name = "NationalityID")
     private Integer id;
 
-    @Column(name = "Country", length = 80)
+    @Column(name = "Country", length = 80, columnDefinition = "NVARCHAR(80)")
     private String country;
 
     protected Nationality() {}

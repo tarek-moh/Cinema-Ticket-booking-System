@@ -1,32 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TextField?>
 
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.image.ImageView?>
 <VBox styleClass="root" stylesheets="@../../../../style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.cinema_ticket_booking_system.MovieBrowserController">
     <children>
         <VBox styleClass="header" alignment="CENTER_LEFT" spacing="5">
             <padding>
                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
             </padding>
-            <Text text="CineApp" styleClass="logo-text-small"/>
-            <Label text="Welcome, User!" styleClass="welcome-label"/>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="CineApp" styleClass="logo-text-small"/>
+                <Button fx:id="backButton" text="&lt; Back" visible="false" managed="false" onAction="#handleBackButton" />
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+                <Label fx:id="welcomeLabel" text="Welcome, User!" styleClass="welcome-label" />
+                <Region HBox.hgrow="ALWAYS" /> <Button fx:id="viewTicketsButton" text="View My Tickets" styleClass="dark-button" onAction="#handleViewTicketsButton" />
+            </HBox>
         </VBox>
 
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-            <content>
-                <VBox spacing="20.0" styleClass="content-pane">
-                    <padding>
-                        <Insets top="20" right="40" bottom="20" left="40"/>
-                    </padding>
-                    <Label text="What's On" styleClass="section-header" />
-                    <TilePane fx:id="movieTilePane" hgap="30" vgap="30" prefColumns="4" />
-                </VBox>
-            </content>
-        </ScrollPane>
+        <StackPane VBox.vgrow="ALWAYS">
+            <VBox fx:id="movieBrowserPane" spacing="20.0" styleClass="content-pane">
+                <padding>
+                    <Insets top="20" right="40" bottom="20" left="40"/>
+                </padding>
+                <Label text="What's On" styleClass="section-header" />
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+                    <content>
+                        <TilePane fx:id="movieTilePane" hgap="30" vgap="30" prefColumns="4" />
+                    </content>
+                </ScrollPane>
+            </VBox>
+
+            <VBox fx:id="movieDetailsPane" spacing="20.0" styleClass="content-pane" visible="false" managed="false" alignment="TOP_CENTER">
+                <padding>
+                    <Insets top="20" right="40" bottom="20" left="40"/>
+                </padding>
+
+                <!-- Movie Poster at the top -->
+                <ImageView fx:id="movieDetailsPoster" fitWidth="300" fitHeight="450" preserveRatio="false" />
+
+                <!-- Movie Title -->
+                <Label fx:id="movieDetailsTitle" styleClass="section-header" />
+
+                <!-- Movie Duration -->
+                <Label fx:id="movieDurationLabel" />
+
+                <!-- Movie Description -->
+                <Label fx:id="movieDetailsDescription" wrapText="true" />
+
+
+                <Button fx:id="bookButton" text="Book Now" />
+            </VBox>
+
+            <VBox fx:id="showtimeSelectionPane" spacing="20.0" styleClass="content-pane" visible="false" managed="false">
+                <padding>
+                    <Insets top="20" right="40" bottom="20" left="40"/>
+                </padding>
+                <Label text="Select a Showtime" styleClass="section-header" />
+                <VBox fx:id="showtimeListVBox" spacing="15.0"/>
+            </VBox>
+
+            <VBox fx:id="seatSelectionPane" spacing="20.0" styleClass="content-pane" visible="false" managed="false" alignment="CENTER">
+                <padding>
+                    <Insets top="20" right="40" bottom="20" left="40"/>
+                </padding>
+                <Label text="Select Your Seats" styleClass="section-header" />
+                <GridPane fx:id="seatGridPane" alignment="CENTER" hgap="10" vgap="10"
+                          minHeight="300" minWidth="600" gridLinesVisible="true">
+                </GridPane>
+                <Label text="Screen" styleClass="screen-label" />
+                <Button fx:id="confirmBookingButton" text="Confirm Booking" onAction="#handleBookingConfirmation" />
+
+            </VBox>
+            <!-- New VBox for the ticket view -->
+            <VBox fx:id="ticketViewPane" spacing="20.0" styleClass="content-pane" visible="false" managed="false">
+                <padding>
+                    <Insets top="20" right="40" bottom="20" left="40"/>
+                </padding>
+                <Label text="My Tickets" styleClass="section-header"/>
+                <VBox fx:id="ticketListVBox" spacing="15.0"/>
+            </VBox>
+        </StackPane>
     </children>
 </VBox>

@@ -7,8 +7,8 @@ import javax.persistence.*;
 public class Cast {
     @Id
     @ManyToOne(optional = false)
-    @JoinColumn(name = "MovieID", nullable = false,
-            foreignKey = @ForeignKey(name = "fk_cast_movie"))
+    @JoinColumn(name = "movieID",
+            foreignKey = @ForeignKey(name = "fk_movie"))
     private Movie movie;
 
     @Id
@@ -47,3 +47,4 @@ public class Cast {
         this.rolePlayed = rolePlayed;
     }
 }
+

@@ -1,6 +1,7 @@
 package org.example.cinema_ticket_booking_system;
 
 import javax.persistence.*;
+
 import javax.validation.constraints.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)  // One table for all subclasses
-@DiscriminatorColumn(name = "UserType", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "UserType", discriminatorType = DiscriminatorType.STRING, columnDefinition = "nvarchar(10)")
 @Table(
         name = "[User]", // matches SQL table
         uniqueConstraints = {
@@ -18,14 +19,14 @@ import java.util.List;
 public class User {
 
     @Id
-    @Column(name="PhoneNumber", length = 50)
+    @Column(name = "PhoneNumber", length = 50, columnDefinition = "NVARCHAR(50)")
     @Length(min = 11, max = 11)
     private String phoneNumber;
 
-    @Column(name="FullName", length = 100)
+    @Column(name="FullName", length = 100, columnDefinition = "NVARCHAR(100)")
     private String fullName;
 
-    @Column(name="Email", length = 100, nullable = false, unique = true)
+    @Column(name = "Email", length = 100, nullable = false, unique = true, columnDefinition = "NVARCHAR(100)")
     @NotBlank(message = "Email is required")
     @Email(message = "Must be a valid email format")
     @Pattern(
@@ -34,7 +35,7 @@ public class User {
     )
     private String email;
 
-    @Column(name="PasswordHash", nullable = false, length = 255)
+    @Column(name="PasswordHash", nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String passwordHash;
